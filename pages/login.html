@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Load Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style_sheet/login.css">
+</head>
+<body>
+
+    <!-- Login Card Container -->
+    <div class="login-card">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Login</h1>
+            <p>Entre na sua conta para continuar</p>
+        </div>
+
+        <!-- Dynamic Message Box (for success/error messages) -->
+        <div id="message-box" class="hidden" role="alert">
+            <!-- Messages will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Form -->
+        <form id="login-form" class="form-container">
+            
+            <!-- E-mail Field -->
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="seu@email.com" 
+                    required
+                    class="input-field"
+                >
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;"
+                    required
+                    class="input-field"
+                >
+            </div>
+
+            <!-- Submit Button (Golden Color) -->
+            <button 
+                type="submit" 
+                class="submit-button"
+            >
+                Entrar
+            </button>
+        </form>
+
+        <!-- Footer Link -->
+        <div class="footer">
+            <span>Não tem uma conta?</span>
+            <a href="#">
+                Cadastre-se
+            </a>
+        </div>
+    </div>
+    <script src="/js_sheet/login.js"></script>
+</body>
+</html>

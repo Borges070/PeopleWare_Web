@@ -1,0 +1,188 @@
+/* --- CSS Variables --- */
+    :root {
+        --primary-yellow: #FFC32D;
+        --text-dark: #333333;
+        --text-medium: #4b5563; /* gray-700 */
+        --text-light: #6b7280; /* gray-500 */
+        --background-light: #f0f2f5; 
+        --border-light: #d1d5db; /* gray-300 */
+        --focus-ring-color: rgba(255, 195, 45, 0.5); /* Semi-transparent yellow for focus ring */
+    }
+
+    /* --- Global Styles --- */
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        color: var(--text-dark);
+    }
+
+    /* --- Login Card Container --- */
+    .login-card {
+        width: 100%;
+        max-width: 24rem; /* max-w-sm (384px) */
+        margin-left: 1rem;
+        margin-right: 1rem;
+        background-color: white;
+        padding: 2rem; /* p-8 */
+        border-radius: 0.75rem; /* rounded-xl */
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* Simplified shadow-2xl */
+        transition: all 0.3s;
+    }
+
+    /* Responsive Padding for larger screens */
+    @media (min-width: 768px) {
+        .login-card {
+            padding: 2.5rem; /* md:p-10 */
+        }
+    }
+    
+    /* --- Header Styles --- */
+    .header {
+        text-align: center;
+        margin-bottom: 1.5rem; /* mb-6 */
+    }
+
+    .header h1 {
+        font-size: 1.875rem; /* text-3xl */
+        font-weight: 700; /* font-bold */
+        margin-bottom: 0.25rem; /* mb-1 */
+        color: var(--text-dark);
+    }
+
+    .header p {
+        font-size: 0.875rem; /* text-sm */
+        color: var(--text-light);
+    }
+
+    /* --- Form Layout (for spacing) --- */
+    .form-container {
+        margin-top: 1.5rem; /* space-y-6 equivalent, handled by margin-bottom on form-group */
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem; /* space-y-6 equivalent */
+    }
+
+    .form-group:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.875rem; /* text-sm */
+        font-weight: 500; /* font-medium */
+        color: var(--text-medium);
+        margin-bottom: 0.5rem; /* mb-2 */
+    }
+
+    /* --- Input Field Styles --- */
+    .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem; /* px-4 py-3 */
+        border: 1px solid var(--border-light);
+        border-radius: 0.5rem; /* rounded-lg */
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        color: var(--text-dark);
+    }
+
+    .input-field:focus {
+        border-color: var(--primary-yellow);
+        box-shadow: 0 0 0 2px var(--primary-yellow), 0 0 0 4px var(--focus-ring-color); /* focus:ring-2 focus:ring-yellow-500 */
+    }
+
+    /* --- Button Styles --- */
+    .submit-button {
+        width: 100%;
+        background-color: var(--primary-yellow);
+        color: var(--text-dark);
+        font-weight: 700; /* font-bold */
+        padding: 0.75rem 1rem; /* py-3 */
+        border-radius: 0.5rem; /* rounded-lg */
+        font-size: 1.125rem; /* text-lg */
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+        transition: background-color 0.2s, box-shadow 0.2s;
+        outline: none;
+    }
+
+    .submit-button:hover {
+        background-color: #f7b822; /* custom-yellow:hover */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* hover:shadow-lg */
+    }
+    
+    .submit-button:focus {
+            box-shadow: 0 0 0 4px var(--focus-ring-color);
+    }
+
+    /* --- Message Box Styles --- */
+    #message-box {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+    }
+    
+    .hidden {
+        display: none;
+    }
+
+    /* Success State */
+    .message-box-success {
+        background-color: #d1fae5; /* bg-green-100 */
+        border-color: #34d399; /* border-green-400 */
+        color: #047857; /* text-green-700 */
+    }
+    
+    /* Error State */
+    .message-box-error {
+        background-color: #fee2e2; /* bg-red-100 */
+        border-color: #f87171; /* border-red-400 */
+        color: #b91c1c; /* text-red-700 */
+    }
+    
+    .message-box-success p {
+        margin: 0;
+        line-height: 1.4;
+    }
+    
+    .message-box-success p:first-child {
+        font-weight: 600;
+    }
+
+    .message-box-success .mt-1 {
+        margin-top: 0.25rem;
+    }
+    
+    /* --- Footer Styles --- */
+    .footer {
+        margin-top: 1.5rem; /* mt-6 */
+        text-align: center;
+        font-size: 0.875rem; /* text-sm */
+    }
+    
+    .footer span {
+        color: var(--text-light);
+    }
+
+    .footer a {
+        color: #d97706; /* text-yellow-600 (Darker yellow link) */
+        font-weight: 600; /* font-semibold */
+        text-decoration: none;
+        margin-left: 0.25rem; /* ml-1 */
+        transition: color 0.15s;
+    }
+
+    .footer a:hover {
+        color: #b45309; /* hover:text-yellow-700 */
+        text-decoration: underline;
+    }

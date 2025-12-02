@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | Crie sua Conta</title>
+    <!-- Load Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style_sheet/register.css">
+</head>
+<body>
+
+    <div id="registration-form-card" class="registration-card">
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Cadastro</h1>
+            <p>Crie sua conta para começar</p>
+        </header>
+
+        <!-- Registration Form -->
+        <form id="registrationForm">
+
+            <!-- Nome (Name) Field -->
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome completo" class="input-field" required>
+            </div>
+
+            <!-- E-mail Field -->
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" class="input-field" required>
+            </div>
+
+            <!-- Universidade (University) Field -->
+            <div class="form-group">
+                <label for="universidade">Universidade</label>
+                <div class="custom-select-wrapper">
+                    <select id="universidade" name="universidade" class="custom-select input-field placeholder-text" required>
+                        <option value="" disabled selected>Selecione sua universidade</option>
+                        <option value="usp">Universidade de São Paulo (USP)</option>
+                        <option value="unicamp">Universidade Estadual de Campinas (UNICAMP)</option>
+                        <option value="ufrj">Universidade Federal do Rio de Janeiro (UFRJ)</option>
+                        <option value="outra">Outra</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Senha (Password) Field -->
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" class="input-field" required>
+            </div>
+
+            <!-- Confirmar Senha (Confirm Password) Field -->
+            <div class="form-group">
+                <label for="confirmarSenha">Confirmar Senha</label>
+                <input type="password" id="confirmarSenha" name="confirmarSenha" class="input-field" required>
+            </div>
+
+            <!-- Error Message Box -->
+            <div id="messageBox" class="hidden"></div>
+
+            <!-- Cadastrar Button -->
+            <button type="submit" class="submit-button" id="registerButton">
+                Cadastrar
+            </button>
+        </form>
+
+        <!-- Footer Link -->
+        <footer class="footer">
+            <p>
+                Já tem uma conta? 
+                <a href="#" onclick="showMessage('Redirecionando para a página de Login...', false)">
+                    Faça login
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="/js_sheet/register.js"></script>
+</body>
+</html>
