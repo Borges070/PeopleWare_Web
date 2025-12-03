@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Network Manager</title>
+    <link rel="stylesheet" href="/Contacts_table.css">
+    
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Left Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <button id="sidebarToggle" class="sidebar-toggle">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </button>
+
+            <div id="sidebarContent" class="sidebar-content">
+                <!-- Header -->
+                <div class="sidebar-header">
+                    <h2>NETWORK MANAGER</h2>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="sidebar-actions">
+                    <button id="addContactBtn" class="btn btn-primary">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <line x1="20" y1="8" x2="20" y2="14"/>
+                            <line x1="23" y1="11" x2="17" y2="11"/>
+                        </svg>
+                        <span>Add Contact</span>
+                    </button>
+
+                    <button id="editContactBtn" class="btn btn-outline" disabled>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        <span>Edit Contact</span>
+                    </button>
+
+                    <button id="removeContactBtn" class="btn btn-danger" disabled>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                        <span>Remove</span>
+                    </button>
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <div class="sidebar-settings">
+                    <div class="dark-mode-toggle">
+                        <div class="dark-mode-label">
+                            <svg class="icon" id="darkModeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5"/>
+                                <line x1="12" y1="1" x2="12" y2="3"/>
+                                <line x1="12" y1="21" x2="12" y2="23"/>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                <line x1="1" y1="12" x2="3" y2="12"/>
+                                <line x1="21" y1="12" x2="23" y2="12"/>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                            </svg>
+                            <span>Dark Mode</span>
+                        </div>
+                        <button id="darkModeToggle" class="toggle-switch">
+                            <div class="toggle-slider"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact List -->
+                <div class="sidebar-contacts">
+                    <div class="contacts-header">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                        <span id="contactCount">All Contacts (0)</span>
+                    </div>
+                    <div id="contactList" class="contact-list"></div>
+                </div>
+            </div>
+
+            <!-- Collapsed Sidebar Icons -->
+            <div id="sidebarCollapsed" class="sidebar-collapsed" style="display: none;">
+                <button class="icon-btn" id="addContactBtnCollapsed" title="Add Contact">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="8.5" cy="7" r="4"/>
+                        <line x1="20" y1="8" x2="20" y2="14"/>
+                        <line x1="23" y1="11" x2="17" y2="11"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="editContactBtnCollapsed" disabled title="Edit Contact">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Edit Form (Hidden by default) -->
+        <div id="editForm" class="edit-form" style="display: none;">
+            <div class="edit-form-header">
+                <div>
+                    <h2 id="formTitle">New Contact</h2>
+                    <p>Fill in the contact details below</p>
+                </div>
+                <button id="closeFormBtn" class="close-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="contactForm" class="form-content">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-bar"></div>
+                        <h3>BASIC INFORMATION</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input type="text" id="inputName" required placeholder="John Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Workplace</label>
+                        <input type="text" id="inputWorkplace" placeholder="Acme Corporation">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="inputDateOfBirth">
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-bar"></div>
+                        <h3>CONTACT DETAILS</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="inputEmail" placeholder="john@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="inputPhone" placeholder="+1 (555) 123-4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Preferred Contact Method</label>
+                        <select id="inputPreferredContact">
+                            <option value="">Select...</option>
+                            <option value="Email">Email</option>
+                            <option value="Phone">Phone</option>
+                            <option value="Text">Text</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Interests -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-bar"></div>
+                        <h3>INTERESTS</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-button">
+                            <input type="text" id="inputInterest" placeholder="Add an interest...">
+                            <button type="button" id="addInterestBtn" class="btn-icon">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="interestsList" class="tags-list"></div>
+                </div>
+
+                <!-- Portfolio -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-bar"></div>
+                        <h3>PORTFOLIO</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Website URL</label>
+                        <input type="url" id="inputPortfolio" placeholder="https://example.com">
+                    </div>
+                </div>
+
+                <!-- Custom Fields -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-bar"></div>
+                        <h3>CUSTOM FIELDS</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="inputFieldLabel" placeholder="Field label...">
+                    </div>
+                    <div class="form-group">
+                        <div class="input-with-button">
+                            <input type="text" id="inputFieldValue" placeholder="Field value...">
+                            <button type="button" id="addCustomFieldBtn" class="btn-icon">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="customFieldsList" class="custom-fields-list"></div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="form-actions">
+                    <button type="submit" id="submitFormBtn" class="btn btn-primary btn-full">
+                        Create Contact
+                    </button>
+                    <button type="button" id="cancelFormBtn" class="btn btn-secondary btn-full">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content">
+            <div class="content-header">
+                <h1>Contact Network</h1>
+                <p id="contentSubtitle">Manage your professional connections • 0 contacts</p>
+            </div>
+
+            <div id="contactGrid" class="contact-grid"></div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <p>No contacts yet</p>
+                <button id="addFirstContactBtn" class="btn btn-primary">
+                    Add Your First Contact
+                </button>
+            </div>
+        </div>
+
+        <!-- Expanded Contact View -->
+        <div id="expandedView" class="expanded-view" style="display: none;">
+            <div class="expanded-header">
+                <div class="expanded-header-content">
+                    <div class="contact-avatar" id="expandedAvatar"></div>
+                    <div>
+                        <h2 id="expandedName"></h2>
+                        <p id="expandedWorkplace"></p>
+                    </div>
+                </div>
+                <button id="closeExpandedBtn" class="close-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="expanded-actions">
+                <button id="editExpandedBtn" class="btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    <span>Edit</span>
+                </button>
+                <button id="removeExpandedBtn" class="btn btn-danger-solid">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    <span>Remove</span>
+                </button>
+            </div>
+
+            <div id="expandedDetails" class="expanded-details"></div>
+        </div>
+    </div>
+
+    <script src="/Contacts_table.js"></script>
+</body>
+</html>
