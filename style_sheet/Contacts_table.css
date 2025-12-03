@@ -76,7 +76,6 @@ p {
     height: 100%;
     background-color: #ffffff;
     border-right: 1px solid #e5e7eb;
-    /* transition: width 0.3s ease; - Moved to combined block above */
     width: 288px;
     flex-shrink: 0;
     display: flex;
@@ -108,7 +107,7 @@ p {
     justify-content: center;
     cursor: pointer;
     z-index: 10;
-    /* transition: background-color 0.2s; - Now handled by global/combined transition */
+
 }
 
 .sidebar-toggle:hover {
@@ -219,7 +218,7 @@ p {
     border-radius: 12px;
     position: relative;
     cursor: pointer;
-    /* transition: background-color 0.2s; - Now handled by global/combined transition */
+    
 }
 
 .toggle-switch.active {
@@ -280,7 +279,6 @@ p {
     color: #374151;
     border-radius: 8px;
     cursor: pointer;
-    /* transition: background-color 0.2s; - Now handled by global/combined transition */
     font-size: 1rem;
 }
 
@@ -319,7 +317,6 @@ p {
     border: none;
     font-size: 1rem;
     cursor: pointer;
-    /* transition: all 0.2s; - Now handled by global/combined transition */
     font-weight: 500;
     margin: 10px
 }
@@ -444,7 +441,6 @@ p {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    /* transition: background-color 0.2s; - Now handled by global/combined transition */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -476,7 +472,6 @@ p {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    /* transition: background-color 0.2s; - Now handled by global/combined transition */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -509,7 +504,6 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* transition: color 0.2s; - Now handled by global/combined transition */
 }
 
 .close-btn:hover {
@@ -617,6 +611,8 @@ p {
     font-size: 0.875rem;
     color: #4b5563;
     font-weight: 500;
+    word-wrap: break-word; /* This makes so big labels can be inputed*/
+    overflow-wrap: break-word;
 }
 
 .dark-mode .form-group label {
@@ -629,7 +625,6 @@ p {
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 1rem;
-    /* transition: all 0.2s; - Now handled by global/combined transition */
     background-color: white;
     color: #1f2937;
 }
@@ -1066,6 +1061,7 @@ p {
     background-color: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
+    width: 100%;
 }
 
 /* Detail Item (Dark Mode Override) */
@@ -1150,11 +1146,13 @@ p {
     background-color: white;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
+    width: 100%;
 }
 
 .dark-mode .detail-custom-field {
     background-color: var(--background-dark-secondary);
     border-color: #374151;
+    width: 100%;
 }
 
 /* Custom Field Dot (Base/Light Mode) */
@@ -1224,6 +1222,122 @@ p {
     background: var(--accent-blue-secondary);
 }
 
+
+/* --- New Component Styles for Features --- */
+
+/* Textarea Component (Feature 1: Large Text Input) */
+.form-group textarea {
+    /* Inherit base input styling */
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.1s ease;
+    background-color: white;
+    color: #1f2937;
+    /* Specific textarea styling */
+    min-height: 100px; /* Gives space for large text */
+    resize: vertical; /* Only allow vertical resizing */
+}
+
+/* Textarea Dark Mode */
+.dark-mode .form-group textarea {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #C04000;
+    box-shadow: 0 0 0 3px rgba(192, 64, 0, 0.1);
+}
+
+/* Textarea Focus Dark Mode */
+.dark-mode .form-group textarea:focus {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+}
+
+/* Search Function Component (Feature 3: Search Contact) */
+/* This will go in your sidebar or main content header */
+/* .search-input-group {
+    padding: 16px 16px 16px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.dark-mode .search-input-group {
+    border-bottom-color: #374151;
+    border-top: 1px solid #374151;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    color: #1f2937;
+    transition: all 0.5s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #C04000;
+    box-shadow: 0 0 0 3px rgba(192, 64, 0, 0.1);
+}
+
+ Search Input Dark Mode 
+.dark-mode .search-input {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.dark-mode .search-input:focus {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+} */
+
+
+/* Add this class to your main CSS file for reliable long-word breaking */
+.text-break-word {
+    word-break: break-word;
+    word-wrap: break-word; /* Older browsers */
+    white-space: normal; /* Override pre-wrap if incorrectly applied elsewhere */
+}
+
+.custom-field-content,
+.detail-item-content,
+.detail-custom-field-content {
+    /* * NEW FIX: This is AI saving my life. Thanks AI!
+     * 1. flex: 1; is critical: it tells this content area to take up the 
+     * remaining space but also allows it to define the boundary for its children.
+     * 2. min-width: 0; is the magic: it fixes a common flexbox bug where 
+     * long unwrapped content (like a URL) prevents the flex item from shrinking.
+     */
+    flex: 1;
+    min-width: 0; 
+    word-break: break-word;/* Wrap for the love of GOD */ 
+}
+
+
+/* Apply word-breaking directly to the text elements inside these containers */
+.custom-field-content p:last-child,
+.detail-item-content p:last-child,
+.detail-custom-field-content p:last-child {
+    /* Ensure long strings wrap */
+    word-break: break-word;
+    /* Ensure line breaks from notes are respected while still breaking words */
+    white-space: pre-wrap; 
+}
+
+/* Apply word-breaking to the first child (label) in custom fields too */
+.detail-custom-field-content p:first-child {
+    word-break: break-word;
+}
 /* Responsive */
 @media (max-width: 1024px) {
     .expanded-view {
