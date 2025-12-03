@@ -14,7 +14,8 @@ const initialContacts = [
         customFields: [
             { label: 'Github', value: 'https://github.com/Borges070/' },
             { label: 'Role', value: 'Senior Software Engineer' }
-        ]
+        ],
+        notes:'This is an exemplary contact used to demonstrate the features of the contact management application. You can edit or remove this contact as needed.'
     },
     {
         id: '2',
@@ -29,7 +30,8 @@ const initialContacts = [
         preferredContact: 'Phone',
         customFields: [
             { label: 'Twitter', value: '@bobmartinez' }
-        ]
+        ],
+        notes:'Bob is a creative professional with a passion for design and user experience. He enjoys gaming in his free time and is always looking for new design trends to explore.'
     },
     {
         id: '3',
@@ -253,6 +255,9 @@ function handleSaveContact(e) {
     const name = document.getElementById('inputName').value.trim();
     if (!name) return;
     
+    // Get the notes input value
+    const notesValue = document.getElementById('inputNotes').value.trim();
+    
     const contact = {
         id: isNewContact ? Date.now().toString() : editingContact.id,
         name: name,
@@ -264,7 +269,8 @@ function handleSaveContact(e) {
         portfolio: document.getElementById('inputPortfolio').value.trim(),
         preferredContact: document.getElementById('inputPreferredContact').value,
         interests: [...tempInterests],
-        customFields: [...tempCustomFields]
+        customFields: [...tempCustomFields],
+        notes: notesValue
     };
     
     if (isNewContact) {
@@ -308,6 +314,7 @@ function clearForm() {
     document.getElementById('inputInterest').value = '';
     document.getElementById('inputFieldLabel').value = '';
     document.getElementById('inputFieldValue').value = '';
+    document.getElementById('inputNotes').value = '';
     renderFormInterests();
     renderFormCustomFields();
 }
@@ -321,6 +328,7 @@ function populateForm(contact) {
     document.getElementById('inputDateOfBirth').value = contact.dateOfBirth || '';
     document.getElementById('inputPortfolio').value = contact.portfolio || '';
     document.getElementById('inputPreferredContact').value = contact.preferredContact || '';
+    document.getElementById('inputNotes').value = contact.notes || '';
     
     renderFormInterests();
     renderFormCustomFields();
@@ -518,7 +526,7 @@ function updateExpandedView() {
                     </svg>
                     <div class="detail-item-content">
                         <p>Email</p>
-                        <p>${contact.email}</p>
+                        <p class="text-break-word" >${contact.email}</p>
                     </div>
                 </div>
             `;
@@ -532,7 +540,7 @@ function updateExpandedView() {
                     </svg>
                     <div class="detail-item-content">
                         <p>Phone</p>
-                        <p>${contact.phone}</p>
+                        <p class="text-break-word" >${contact.phone}</p>
                     </div>
                 </div>
             `;
@@ -549,7 +557,7 @@ function updateExpandedView() {
                     </svg>
                     <div class="detail-item-content">
                         <p>Date of Birth</p>
-                        <p>${contact.dateOfBirth}</p>
+                        <p class="text-break-word" >${contact.dateOfBirth}</p>
                     </div>
                 </div>
             `;
@@ -564,7 +572,7 @@ function updateExpandedView() {
                     </svg>
                     <div class="detail-item-content">
                         <p>Workplace</p>
-                        <p>${contact.workplace}</p>
+                        <p class="text-break-word" >${contact.workplace}</p>
                     </div>
                 </div>
             `;
@@ -611,7 +619,7 @@ function updateExpandedView() {
                     </svg>
                     <div class="detail-item-content">
                         <p>Website</p>
-                        <p><a href="${contact.portfolio}" target="_blank" rel="noopener noreferrer">${contact.portfolio}</a></p>
+                        <p><a href="${contact.portfolio}" target="_blank" class="text-break-word" rel="noopener noreferrer">${contact.portfolio}</a></p>
                     </div>
                 </div>
             </div>
@@ -651,11 +659,35 @@ function updateExpandedView() {
                     <div class="detail-custom-field">
                         <div class="dot"></div>
                         <div class="detail-custom-field-content">
-                            <p>${field.label}</p>
-                            <p>${field.value}</p>
+                            <p class="text-break-word" >${field.label}</p>
+                            <p class="text-break-word" >${field.value}</p>
                         </div>
                     </div>
                 `).join('')}
+            </div>
+        `;
+    }
+    // Notes Section
+    if (contact.notes) {
+        html += `
+            <div class="detail-section">
+                <div class="detail-section-header">
+                    <div class="section-bar"></div>
+                    <h3>NOTES</h3>
+                </div>
+                <div class="detail-custom-field">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    <div class="detail-item-content">
+                        <p>Detailed Notes</p>
+                        <p style="white-space: pre-wrap;" class="text-break-word">${contact.notes}</p>
+                    </div>
+                </div>
             </div>
         `;
     }
