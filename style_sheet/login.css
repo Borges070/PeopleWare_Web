@@ -1,6 +1,6 @@
 /* --- CSS Variables --- */
     :root {
-        --primary-yellow: #FFC32D;
+        --primary-yellow: #dc9c80;
         --text-dark: #333333;
         --text-medium: #4b5563; /* gray-700 */
         --text-light: #6b7280; /* gray-500 */
@@ -88,6 +88,7 @@
         border-radius: 0.5rem; /* rounded-lg */
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
         outline: none;
+        font-size: 1.1rem;
         transition: border-color 0.15s, box-shadow 0.15s;
         color: var(--text-dark);
     }
@@ -104,6 +105,7 @@
         color: var(--text-dark);
         font-weight: 700; /* font-bold */
         padding: 0.75rem 1rem; /* py-3 */
+        margin-top: 0.75rem;
         border-radius: 0.5rem; /* rounded-lg */
         font-size: 1.125rem; /* text-lg */
         border: none;
@@ -114,7 +116,7 @@
     }
 
     .submit-button:hover {
-        background-color: #f7b822; /* custom-yellow:hover */
+        background-color: #dc9c80; /* custom-yellow:hover */
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* hover:shadow-lg */
     }
     
@@ -175,7 +177,7 @@
     }
 
     .footer a {
-        color: #d97706; /* text-yellow-600 (Darker yellow link) */
+        color: #dc9c80; 
         font-weight: 600; /* font-semibold */
         text-decoration: none;
         margin-left: 0.25rem; /* ml-1 */

@@ -27,6 +27,7 @@
                 </p>
             `;
             messageBox.classList.add('message-box-success');
+            window.location.href = "index.html"           
 
             // Optionally, clear the form fields
             document.getElementById('login-form').reset();

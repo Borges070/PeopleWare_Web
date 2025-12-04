@@ -1,6 +1,6 @@
 /* CSS Variables for Colors */
     :root {
-        --primary-yellow: #FDC52D;
+        --primary-yellow: #dc9c80;
         --text-dark: #333333;
         --background-light: #f9fafb; /* Equivalent to gray-50 */
         --border-light: #e5e7eb; /* Equivalent to gray-200 */
@@ -127,7 +127,7 @@
     }
 
     .submit-button:hover {
-        background-color: #eab308; /* Darker yellow */
+        background-color: #dc9c80; 
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-lg */
     }
     
