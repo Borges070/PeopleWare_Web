@@ -10,6 +10,7 @@
         // Clear previous classes
         messageBox.classList.remove('message-box-success', 'message-box-error', 'hidden');
 
+<<<<<<< HEAD
         // Simple validation and success message
         if (email && password) {
             // In a real application, you would send this data to a server for authentication.
@@ -28,9 +29,45 @@
             `;
             messageBox.classList.add('message-box-success');
             window.location.href = "index.html"           
-
-            // Optionally, clear the form fields
+=======
+    if (email && password) {
+        fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    messageBox.innerHTML = data.error;
+                    messageBox.classList.add('message-box-error');
+                } else {
+                    messageBox.innerHTML = `
+                    <p class="font-semibold">
+                        Login successful!
+                    </p>
+                    <p class="text-sm mt-1">
+                        Welcome, ${data.user.name}
+                    </p>
+                `;
+                    messageBox.classList.add('message-box-success');
             document.getElementById('login-form').reset();
+>>>>>>> 594181017b6e40d0d0c56a744aa5472fd7f2c9d2
+
+                    // Store user info and redirect
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                messageBox.innerHTML = 'Erro ao conectar com o servidor.';
+                messageBox.classList.add('message-box-error');
+            });
 
         } else {
             messageBox.innerHTML = 'Preencha todos os campos para continuar.';
