@@ -1,0 +1,1362 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Global Transition for Smoothness (NEW) --- */
+/* Apply a smooth transition to relevant properties for all elements */
+* {
+    transition: background-color 1s ease, color 1s ease, border-color 1s ease, box-shadow 1s ease;
+}
+/* Ensure the transition on the sidebar width remains fast */
+.sidebar {
+    transition: width 0.3s ease, background-color 1s ease, border-color 1s ease;
+}
+/* Exclude the transform from the slow transition for a snappy toggle icon */
+.sidebar-toggle svg {
+    transition: transform 0.3s ease;
+}
+/* Ensure sliders remain fast */
+.toggle-slider {
+    transition: transform 0.2s ease, background-color 1s ease;
+}
+
+
+/* --- New Dark Mode Variables --- */
+:root {
+    --accent-blue-primary: #00FFFF; /* Neon Blue */
+    --accent-blue-secondary: #00AEEF; /* Electric Blue for hover/gradient */
+    --background-dark-primary: #0A0A1F; /* Deep Dark Background */
+    --background-dark-secondary: #1F2937; /* Dark Grey for elements */
+    --text-light-primary: #f3f4f6;
+    --text-light-secondary: #9ca3af;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #1f2937; /* Default light mode text */
+}
+
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+p {
+    font-size: 1rem;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    background-color: #f9fafb; /* Light mode background */
+}
+
+.app-container.dark-mode {
+    background-color: var(--background-dark-primary); /* Deep Black Background */
+}
+
+/* Sidebar Styles */
+.sidebar {
+    position: relative;
+    height: 100%;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    width: 288px;
+    flex-shrink: 0;
+    display: flex;
+}
+
+.dark-mode .sidebar {
+    background-color: var(--background-dark-secondary); /* Dark Grey Sidebar */
+    border-right-color: var(--background-dark-secondary); /* Blend border into background */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar.collapsed {
+    width: 64px;
+}
+
+/* Sidebar Toggle Button (Base/Light Mode) */
+.sidebar-toggle {
+    position: absolute;
+    right: -12px;
+    top: 24px;
+    width: 24px;
+    height: 24px;
+    background-color: #C04000;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+
+}
+
+.sidebar-toggle:hover {
+    background-color: #CC5500;
+}
+
+/* Sidebar Toggle Button (Dark Mode Override) */
+.dark-mode .sidebar-toggle {
+    background-color: var(--accent-blue-primary);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+.dark-mode .sidebar-toggle:hover {
+    background-color: var(--accent-blue-secondary);
+}
+
+.sidebar-toggle .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.sidebar.collapsed .sidebar-toggle svg {
+    transform: rotate(180deg);
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.sidebar.collapsed .sidebar-content {
+    display: none;
+}
+
+.sidebar-collapsed {
+    padding: 8px;
+    margin-top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dark-mode .sidebar-header {
+    border-bottom-color: #374151;
+}
+
+.sidebar-header h2 {
+    color: #C04000;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+}
+
+.dark-mode .sidebar-header h2 {
+    color: var(--accent-blue-primary); /* Neon Blue Header Text */
+}
+
+.sidebar-actions {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dark-mode .sidebar-actions {
+    border-bottom-color: #374151;
+}
+
+.sidebar-settings {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.dark-mode .sidebar-settings {
+    border-bottom-color: #374151;
+}
+
+.dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+}
+
+.dark-mode-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #374151;
+}
+
+.dark-mode .dark-mode-label {
+    color: var(--text-light-primary);
+}
+
+.toggle-switch {
+    width: 48px;
+    height: 24px;
+    background-color: #d1d5db;
+    border: none;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    
+}
+
+.toggle-switch.active {
+    background-color: #C04000;
+}
+
+/* Toggle Switch (Dark Mode Override) */
+.dark-mode .toggle-switch.active {
+    background-color: var(--accent-blue-primary);
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    
+}
+
+.toggle-switch.active .toggle-slider {
+    transform: translateX(24px);
+}
+
+.sidebar-contacts {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.contacts-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.dark-mode .contacts-header {
+    color: var(--text-light-secondary);
+}
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contact-list-item {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+    color: #374151;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.dark-mode .contact-list-item {
+    color: var(--text-light-primary);
+}
+
+.contact-list-item:hover {
+    background-color: #f3f4f6;
+}
+
+.dark-mode .contact-list-item:hover {
+    background-color: #374151;
+}
+
+.contact-list-item.selected {
+    background-color: #C04000;
+    color: white;
+}
+
+/* Selected List Item (Dark Mode Override) */
+.dark-mode .contact-list-item.selected {
+    background-color: var(--accent-blue-primary); /* Neon Blue Selected Item */
+    color: var(--background-dark-primary); /* Dark Text on Blue */
+    font-weight: 600;
+}
+
+/* Button Styles */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin: 10px
+}
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Primary Button (Base/Light Mode) */
+.btn-primary {
+    background-color: #C04000;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #CC5500;
+}
+
+/* Primary Button (Dark Mode Override) */
+.dark-mode .btn-primary {
+    background-color: var(--accent-blue-primary);
+    color: var(--background-dark-primary); /* Dark text on blue */
+    font-weight: 600;
+}
+
+.dark-mode .btn-primary:hover:not(:disabled) {
+    background-color: var(--accent-blue-secondary);
+}
+
+
+/* Outline Button (Base/Light Mode) */
+.btn-outline {
+    background: transparent;
+    border: 1px solid #C04000;
+    color: #C04000;
+}
+
+/* Outline Button (Dark Mode Override) */
+.dark-mode .btn-outline {
+    border-color: var(--accent-blue-primary);
+    color: var(--accent-blue-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+    background-color: #C04000;
+    color: white;
+}
+
+/* Outline Button Hover (Dark Mode Override) */
+.dark-mode .btn-outline:hover:not(:disabled) {
+    background-color: var(--accent-blue-primary);
+    color: var(--background-dark-primary);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #374151;
+}
+
+.dark-mode .btn-secondary {
+    border-color: #4b5563;
+    color: #d1d5db;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #f3f4f6;
+}
+
+.dark-mode .btn-secondary:hover:not(:disabled) {
+    background-color: #374151;
+}
+
+.btn-danger {
+    background: transparent;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+}
+
+.dark-mode .btn-danger {
+    border-color: #dc2626;
+    color: #ef4444;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #fef2f2;
+}
+
+.dark-mode .btn-danger:hover:not(:disabled) {
+    background-color: #7f1d1d;
+}
+
+.btn-danger-solid {
+    background-color: #dc2626;
+    color: white;
+}
+
+.btn-danger-solid:hover {
+    background-color: #b91c1c;
+}
+
+.btn-white {
+    background-color: white;
+    color: #C04000;
+}
+
+.btn-white:hover {
+    background-color: #f3f4f6;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* Icon Button (Base/Light Mode) */
+.icon-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #C04000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover:not(:disabled) {
+    background-color: #CC5500;
+}
+
+.icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Icon Button (Dark Mode Override) */
+.dark-mode .icon-btn {
+    background-color: var(--accent-blue-primary);
+}
+
+.dark-mode .icon-btn:hover:not(:disabled) {
+    background-color: var(--accent-blue-secondary);
+}
+
+/* Small Icon Button (Base/Light Mode) */
+.btn-icon {
+    padding: 8px;
+    background-color: #C04000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background-color: #CC5500;
+}
+
+/* Small Icon Button (Dark Mode Override) */
+.dark-mode .btn-icon {
+    background-color: var(--accent-blue-primary);
+}
+
+.dark-mode .btn-icon:hover {
+    background-color: var(--accent-blue-secondary);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: white;
+}
+
+.dark-mode .expanded-view .close-btn {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Edit Form */
+.edit-form {
+    width: 384px;
+    flex-shrink: 0;
+    background-color: white;
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.dark-mode .edit-form {
+    background-color: var(--background-dark-secondary);
+    border-right-color: #374151;
+}
+
+/* Edit Form Header (Base/Light Mode) */
+.edit-form-header {
+    /* Note: Background gradients don't transition smoothly, but the components they affect will. */
+    background: linear-gradient(135deg, #C04000, #CC5500);
+    color: white;
+    padding: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+/* Edit Form Header (Dark Mode Override) */
+.dark-mode .edit-form-header {
+    background: linear-gradient(135deg, var(--background-dark-secondary), var(--background-dark-primary));
+    border-bottom: 2px solid var(--accent-blue-primary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.edit-form-header h2 {
+    color: white;
+    margin-bottom: 4px;
+}
+
+.edit-form-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+}
+
+.form-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Form Section Header (Base/Light Mode) */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #C04000;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(192, 64, 0, 0.2);
+}
+
+/* Form Section Header (Dark Mode Override) */
+.dark-mode .section-header {
+    color: var(--accent-blue-primary);
+    border-bottom-color: rgba(0, 255, 255, 0.2);
+}
+
+/* Section Bar (Base/Light Mode) */
+.section-bar {
+    width: 4px;
+    height: 20px;
+    background-color: #C04000;
+}
+
+/* Section Bar (Dark Mode Override) */
+.dark-mode .section-bar {
+    background-color: var(--accent-blue-primary);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    color: #4b5563;
+    font-weight: 500;
+    word-wrap: break-word; /* This makes so big labels can be inputed*/
+    overflow-wrap: break-word;
+}
+
+.dark-mode .form-group label {
+    color: #9ca3af;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    color: #1f2937;
+}
+
+.dark-mode .form-group input,
+.dark-mode .form-group select {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #C04000;
+    box-shadow: 0 0 0 3px rgba(192, 64, 0, 0.1);
+}
+
+/* Input Focus (Dark Mode Override) */
+.dark-mode .form-group input:focus,
+.dark-mode .form-group select:focus {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+}
+
+.required {
+    color: #C04000;
+}
+
+.dark-mode .required {
+    color: var(--accent-blue-primary);
+}
+
+.input-with-button {
+    display: flex;
+    gap: 8px;
+}
+
+.input-with-button input {
+    flex: 1;
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.dark-mode .input-with-button input {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Tag (Base/Light Mode) */
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background-color: rgba(192, 64, 0, 0.1);
+    color: #C04000;
+    border-radius: 16px;
+    font-size: 0.875rem;
+}
+
+/* Tag (Dark Mode Override) */
+.dark-mode .tag {
+    background-color: rgba(0, 255, 255, 0.1);
+    color: var(--accent-blue-primary);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.tag button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tag button:hover {
+    color: #CC5500;
+}
+
+.dark-mode .tag button:hover {
+    color: var(--accent-blue-secondary);
+}
+
+.custom-fields-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.custom-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.dark-mode .custom-field {
+    background-color: var(--background-dark-primary);
+    border-color: #374151;
+}
+
+.custom-field-content p:first-child {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.dark-mode .custom-field-content p:first-child {
+    color: #9ca3af;
+}
+
+.custom-field-content p:last-child {
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.dark-mode .custom-field-content p:last-child {
+    color: var(--text-light-primary);
+}
+
+.custom-field button {
+    background: none;
+    border: none;
+    color: #dc2626;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-field button:hover {
+    color: #b91c1c;
+}
+
+.form-actions {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    padding-top: 16px;
+    padding-bottom: 8px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.dark-mode .form-actions {
+    background-color: var(--background-dark-secondary);
+    border-top-color: #374151;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+}
+
+.content-header {
+    max-width: 1280px;
+    margin: 0 auto 32px;
+}
+
+.content-header h1 {
+    color: #C04000;
+    margin-bottom: 8px;
+}
+
+.dark-mode .content-header h1 {
+    color: var(--accent-blue-primary);
+}
+
+.content-header p {
+    color: #6b7280;
+}
+
+.dark-mode .content-header p {
+    color: #9ca3af;
+}
+
+.contact-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+}
+
+/* Contact Card (Base/Light Mode) */
+.contact-card {
+    background-color: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.5s ease; /* Transition added here */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Contact Card (Dark Mode Override) */
+.dark-mode .contact-card {
+    background-color: #1f2937; /* Darker than primary background for contrast */
+    border-color: #374151;
+}
+
+.contact-card:hover {
+    border-color: #CC5500;
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact Card Hover (Dark Mode Override) */
+.dark-mode .contact-card:hover {
+    border-color: var(--accent-blue-primary); /* Blue Glow on hover */
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+    transform: scale(1.02);
+}
+
+.contact-card.selected {
+    border-color: #C04000;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact Card Selected (Dark Mode Override) */
+.dark-mode .contact-card.selected {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+}
+
+/* Contact Avatar (Base/Light Mode) */
+.contact-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C04000, #CC5500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Contact Avatar (Dark Mode Override) */
+.dark-mode .contact-avatar {
+    background: var(--accent-blue-secondary); /* Blue Avatar */
+    box-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+}
+
+.contact-info {
+    text-align: center;
+    width: 100%;
+}
+
+.contact-info h3 {
+    color: #1f2937;
+    margin-bottom: 4px;
+    font-size: 1.125rem;
+    letter-spacing: normal;
+}
+
+.dark-mode .contact-info h3 {
+    color: var(--text-light-primary);
+}
+
+.contact-info p {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.dark-mode .contact-info p {
+    color: #9ca3af;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 48px;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.empty-state p {
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.dark-mode .empty-state p {
+    color: #9ca3af;
+}
+
+/* Expanded Contact View */
+.expanded-view {
+    width: 384px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #f9fafb, white);
+    border-left: 4px solid #C04000;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Expanded Contact View (Dark Mode Override) */
+.dark-mode .expanded-view {
+    background: var(--background-dark-primary);
+    border-left: 4px solid var(--accent-blue-primary);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Expanded Header (Base/Light Mode) */
+.expanded-header {
+    background: linear-gradient(135deg, #C04000, #CC5500);
+    color: white;
+    padding: 24px;
+}
+
+/* Expanded Header (Dark Mode Override) */
+.dark-mode .expanded-header {
+    background: linear-gradient(135deg, var(--background-dark-secondary), var(--background-dark-primary));
+    border-bottom: 2px solid var(--accent-blue-primary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.expanded-header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* Expanded Header Avatar (Base/Light Mode) */
+.expanded-header .contact-avatar {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    font-size: 1.5rem;
+}
+
+/* Expanded Header Avatar (Dark Mode Override) */
+.dark-mode .expanded-header .contact-avatar {
+    border: 2px solid var(--accent-blue-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+.expanded-header h2 {
+    color: white;
+    margin-bottom: 4px;
+}
+
+.expanded-header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+.expanded-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.expanded-actions .btn {
+    flex: 1;
+    
+}
+
+.expanded-details {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Detail Section Header (Base/Light Mode) */
+.detail-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #C04000;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(192, 64, 0, 0.2);
+}
+
+/* Detail Section Header (Dark Mode Override) */
+.dark-mode .detail-section-header {
+    color: var(--accent-blue-primary);
+    border-bottom-color: rgba(0, 255, 255, 0.2);
+}
+
+/* Detail Section Bar (Base/Light Mode) */
+.detail-section-header .section-bar {
+    width: 4px;
+    height: 20px;
+    background-color: #C04000;
+}
+
+/* Detail Section Bar (Dark Mode Override) */
+.dark-mode .detail-section-header .section-bar {
+    background-color: var(--accent-blue-primary);
+}
+
+/* Detail Item (Base/Light Mode) */
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* Detail Item (Dark Mode Override) */
+.dark-mode .detail-item {
+    background-color: var(--background-dark-secondary);
+    border-color: #374151;
+}
+
+/* Detail Item Icon (Base/Light Mode) */
+.detail-item .icon {
+    color: #C04000;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Detail Item Icon (Dark Mode Override) */
+.dark-mode .detail-item .icon {
+    color: var(--accent-blue-primary);
+}
+
+.detail-item-content p:first-child {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.dark-mode .detail-item-content p:first-child {
+    color: #9ca3af;
+}
+
+.detail-item-content p:last-child {
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.dark-mode .detail-item-content p:last-child {
+    color: var(--text-light-primary);
+}
+
+.detail-item-content a {
+    color: #C04000;
+    text-decoration: none;
+}
+
+/* Detail Item Link (Dark Mode Override) */
+.dark-mode .detail-item-content a {
+    color: var(--accent-blue-primary);
+}
+
+.detail-item-content a:hover {
+    text-decoration: underline;
+}
+
+.detail-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Interest Tag (Base/Light Mode) */
+.interest-tag {
+    padding: 4px 12px;
+    background-color: rgba(192, 64, 0, 0.1);
+    color: #C04000;
+    border-radius: 16px;
+    font-size: 0.875rem;
+}
+
+/* Interest Tag (Dark Mode Override) */
+.dark-mode .interest-tag {
+    background-color: rgba(0, 255, 255, 0.1);
+    color: var(--accent-blue-primary);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+/* Custom Detail Field */
+.detail-custom-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.dark-mode .detail-custom-field {
+    background-color: var(--background-dark-secondary);
+    border-color: #374151;
+    width: 100%;
+}
+
+/* Custom Field Dot (Base/Light Mode) */
+.detail-custom-field .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #C04000;
+    border-radius: 50%;
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+
+/* Custom Field Dot (Dark Mode Override) */
+.dark-mode .detail-custom-field .dot {
+    background-color: var(--accent-blue-primary);
+    box-shadow: 0 0 5px var(--accent-blue-primary);
+}
+
+.detail-custom-field-content p:first-child {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.dark-mode .detail-custom-field-content p:first-child {
+    color: #9ca3af;
+}
+
+.detail-custom-field-content p:last-child {
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.dark-mode .detail-custom-field-content p:last-child {
+    color: var(--text-light-primary);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+/* Scrollbar Thumb (Base/Light Mode) */
+::-webkit-scrollbar-thumb {
+    background: #C04000;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CC5500;
+}
+
+/* Scrollbar Thumb (Dark Mode Override) */
+.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--accent-blue-primary);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue-secondary);
+}
+
+
+/* --- New Component Styles for Features --- */
+
+/* Textarea Component (Feature 1: Large Text Input) */
+.form-group textarea {
+    /* Inherit base input styling */
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.1s ease;
+    background-color: white;
+    color: #1f2937;
+    /* Specific textarea styling */
+    min-height: 100px; /* Gives space for large text */
+    resize: vertical; /* Only allow vertical resizing */
+}
+
+/* Textarea Dark Mode */
+.dark-mode .form-group textarea {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: #C04000;
+    box-shadow: 0 0 0 3px rgba(192, 64, 0, 0.1);
+}
+
+/* Textarea Focus Dark Mode */
+.dark-mode .form-group textarea:focus {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+}
+
+/* Search Function Component (Feature 3: Search Contact) */
+/* This will go in your sidebar or main content header */
+/* .search-input-group {
+    padding: 16px 16px 16px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.dark-mode .search-input-group {
+    border-bottom-color: #374151;
+    border-top: 1px solid #374151;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    color: #1f2937;
+    transition: all 0.5s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #C04000;
+    box-shadow: 0 0 0 3px rgba(192, 64, 0, 0.1);
+}
+
+ Search Input Dark Mode 
+.dark-mode .search-input {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: var(--text-light-primary);
+}
+
+.dark-mode .search-input:focus {
+    border-color: var(--accent-blue-primary);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+} */
+
+
+/* Add this class to your main CSS file for reliable long-word breaking */
+.text-break-word {
+    word-break: break-word;
+    word-wrap: break-word; /* Older browsers */
+    white-space: normal; /* Override pre-wrap if incorrectly applied elsewhere */
+}
+
+.custom-field-content,
+.detail-item-content,
+.detail-custom-field-content {
+    /* * NEW FIX: This is AI saving my life. Thanks AI!
+     * 1. flex: 1; is critical: it tells this content area to take up the 
+     * remaining space but also allows it to define the boundary for its children.
+     * 2. min-width: 0; is the magic: it fixes a common flexbox bug where 
+     * long unwrapped content (like a URL) prevents the flex item from shrinking.
+     */
+    flex: 1;
+    min-width: 0; 
+    word-break: break-word;/* Wrap for the love of GOD */ 
+}
+
+
+/* Apply word-breaking directly to the text elements inside these containers */
+.custom-field-content p:last-child,
+.detail-item-content p:last-child,
+.detail-custom-field-content p:last-child {
+    /* Ensure long strings wrap */
+    word-break: break-word;
+    /* Ensure line breaks from notes are respected while still breaking words */
+    white-space: pre-wrap; 
+}
+
+/* Apply word-breaking to the first child (label) in custom fields too */
+.detail-custom-field-content p:first-child {
+    word-break: break-word;
+}
+/* Responsive */
+@media (max-width: 1024px) {
+    .expanded-view {
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 20;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+}
