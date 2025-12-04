@@ -56,7 +56,7 @@ function handleLogin(event) {
 
                     // Store user info and redirect
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = "./pages/index.html"
+                    window.location.href = "./index.html"
                     setTimeout(() => {
                         window.location.href = 'index.html';
                     }, 2000);

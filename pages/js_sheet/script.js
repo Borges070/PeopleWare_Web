@@ -83,7 +83,7 @@ function saveGraph(isAutoSave = false) {
     if (!user) {
         if (!isAutoSave) {
             alert('Você precisa estar logado para salvar o gráfico.');
-            window.location.href = '/pages/login.html';
+            window.location.href = './login.html';
         }
         return;
     }
