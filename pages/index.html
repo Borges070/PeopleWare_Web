@@ -118,6 +118,41 @@
             <div id="nodes-container"></div>
             <div class="mode-indicator" id="mode-indicator"></div>
         </div>
+
+        <aside class="contact-panel" id="contact-panel">
+            <div class="panel-header">
+                <div>
+                    <p class="panel-kicker">Detalhes do grafo</p>
+                    <h3 id="panel-title">Selecionar nó</h3>
+                    <p class="panel-sub" id="panel-subtitle"></p>
+                </div>
+                <button class="panel-close" id="panel-close" aria-label="Fechar detalhe">×</button>
+            </div>
+            <div class="panel-body">
+                <div class="panel-section">
+                    <p class="section-title">Informações</p>
+                    <div class="panel-item">
+                        <span class="dot"></span>
+                        <div>
+                            <p class="item-label">ID</p>
+                            <p class="item-value" id="panel-node-id">--</p>
+                        </div>
+                    </div>
+                    <div class="panel-item">
+                        <span class="dot"></span>
+                        <div>
+                            <p class="item-label">Conexões</p>
+                            <p class="item-value" id="panel-node-connections">--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <p class="section-title">Nós ligados</p>
+                    <ul class="connection-list" id="panel-connections-list"></ul>
+                </div>
+            </div>
+        </aside>
     </div>
 
     <footer class="site-footer">

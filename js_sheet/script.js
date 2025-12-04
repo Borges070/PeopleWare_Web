@@ -33,6 +33,7 @@ let editingNode = null;
 let draggingNode = null;
 let dragOffset = { x: 0, y: 0 };
 const MIN_DISTANCE = 100; // Minimum distance between node centers
+let detailNodeId = null;
 
 // Check for collision with other nodes
 function checkCollision(x, y, excludeNodeId = null) {
@@ -55,6 +56,13 @@ const svgCanvas = document.getElementById('svg-canvas');
 const cardsList = document.getElementById('cards-list');
 const modeIndicator = document.getElementById('mode-indicator');
 const btnSave = document.getElementById('btn-save');
+const contactPanel = document.getElementById('contact-panel');
+const panelTitle = document.getElementById('panel-title');
+const panelSubtitle = document.getElementById('panel-subtitle');
+const panelNodeId = document.getElementById('panel-node-id');
+const panelNodeConnections = document.getElementById('panel-node-connections');
+const panelConnectionsList = document.getElementById('panel-connections-list');
+const panelClose = document.getElementById('panel-close');
 
 // Initialize
 // Initialize
@@ -64,6 +72,7 @@ function init() {
     renderNodes();
     renderEdges();
     renderCardsList();
+    renderContactPanel();
     updateModeIndicator();
 }
 
@@ -167,6 +176,7 @@ function applyGraphData(data) {
     renderNodes();
     renderEdges();
     renderCardsList();
+    renderContactPanel();
 }
 
 // Event Listeners
@@ -200,9 +210,18 @@ function setupEventListeners() {
         btnSave.addEventListener('click', () => saveGraph(false));
     }
 
+    if (panelClose) {
+        panelClose.addEventListener('click', () => {
+            detailNodeId = null;
+            renderContactPanel();
+        });
+    }
+
     // Canvas click
     canvas.addEventListener('click', (e) => {
         if (e.target !== canvas && e.target !== nodesContainer) return;
+        detailNodeId = null;
+        renderContactPanel();
 
         if (mode === 'add') {
             const rect = canvas.getBoundingClientRect();
@@ -387,6 +406,7 @@ function updateNodeLabel(nodeId, label) {
         node.label = label;
         renderNodes();
         renderCardsList();
+        renderContactPanel();
         debouncedSaveGraph();
     }
 }
@@ -395,9 +415,13 @@ function updateNodeLabel(nodeId, label) {
 function removeNode(nodeId) {
     nodes = nodes.filter(n => n.id !== nodeId);
     edges = edges.filter(e => e.from !== nodeId && e.to !== nodeId);
+    if (detailNodeId === nodeId) {
+        detailNodeId = null;
+    }
     renderNodes();
     renderEdges();
     renderCardsList();
+    renderContactPanel();
     debouncedSaveGraph();
 }
 
@@ -410,6 +434,7 @@ function connectNodes(fromId, toId) {
     };
     edges.push(newEdge);
     renderEdges();
+    renderContactPanel();
     debouncedSaveGraph();
 }
 
@@ -525,6 +550,12 @@ function renderNodes() {
             }
         });
 
+        nodeEl.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            detailNodeId = node.id;
+            renderContactPanel();
+        });
+
         nodeEl.addEventListener('mousedown', (e) => {
             handleNodeMouseDown(node.id, e);
         });
@@ -596,6 +627,41 @@ function renderCardsList() {
         });
         cardsList.appendChild(cardItem);
     });
+}
+
+function renderContactPanel() {
+    if (!contactPanel) return;
+    const node = nodes.find(n => n.id === detailNodeId);
+    if (!node) {
+        contactPanel.classList.remove('visible');
+        return;
+    }
+
+    const connected = edges
+        .filter(e => e.from === node.id || e.to === node.id)
+        .map(e => e.from === node.id ? e.to : e.from)
+        .map(id => nodes.find(n => n.id === id))
+        .filter(Boolean);
+
+    panelTitle.textContent = node.label;
+    panelSubtitle.textContent = `ID ${node.id}`;
+    panelNodeId.textContent = node.id;
+    panelNodeConnections.textContent = `${connected.length} conexão${connected.length === 1 ? '' : 's'}`;
+
+    panelConnectionsList.innerHTML = '';
+    if (connected.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Sem conexões';
+        panelConnectionsList.appendChild(li);
+    } else {
+        connected.forEach(n => {
+            const li = document.createElement('li');
+            li.textContent = n.label;
+            panelConnectionsList.appendChild(li);
+        });
+    }
+
+    contactPanel.classList.add('visible');
 }
 
 // Start the app
