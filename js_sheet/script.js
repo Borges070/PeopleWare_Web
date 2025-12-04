@@ -646,7 +646,7 @@ function renderContactPanel() {
     panelTitle.textContent = node.label;
     panelSubtitle.textContent = `ID ${node.id}`;
     panelNodeId.textContent = node.id;
-    panelNodeConnections.textContent = `${connected.length} conexão${connected.length === 1 ? '' : 's'}`;
+    panelNodeConnections.textContent = `${connected.length} ${connected.length === 1 ? 'conexão' : 'conexões'}`;
 
     panelConnectionsList.innerHTML = '';
     if (connected.length === 0) {
