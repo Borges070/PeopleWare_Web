@@ -32,6 +32,18 @@ let connectingFrom = null;
 let editingNode = null;
 let draggingNode = null;
 let dragOffset = { x: 0, y: 0 };
+const MIN_DISTANCE = 100; // Minimum distance between node centers
+
+// Check for collision with other nodes
+function checkCollision(x, y, excludeNodeId = null) {
+    return nodes.some(node => {
+        if (node.id === excludeNodeId) return false;
+        const dx = node.x - x;
+        const dy = node.y - y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < MIN_DISTANCE;
+    });
+}
 
 // DOM Elements
 const app = document.querySelector('.app');
@@ -42,14 +54,119 @@ const nodesContainer = document.getElementById('nodes-container');
 const svgCanvas = document.getElementById('svg-canvas');
 const cardsList = document.getElementById('cards-list');
 const modeIndicator = document.getElementById('mode-indicator');
+const btnSave = document.getElementById('btn-save');
 
+// Initialize
 // Initialize
 function init() {
     setupEventListeners();
+    loadGraph(); // Load graph on startup
     renderNodes();
     renderEdges();
     renderCardsList();
     updateModeIndicator();
+}
+
+// Save Graph
+// Save Graph
+function saveGraph(isAutoSave = false) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        if (!isAutoSave) {
+            alert('Você precisa estar logado para salvar o gráfico.');
+            window.location.href = '/pages/login.html';
+        }
+        return;
+    }
+
+    const data = { nodes, edges, darkMode };
+
+    // 1. Save to Local Cache (Instant)
+    localStorage.setItem(`graph_cache_${user.id}`, JSON.stringify(data));
+
+    // 2. Save to Server (Async)
+    fetch('http://localhost:3000/graph', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: user.id, data })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error saving graph:', data.error);
+                if (!isAutoSave) alert('Erro ao salvar: ' + data.error);
+            } else {
+                console.log('Graph saved successfully');
+                if (!isAutoSave) alert('Gráfico salvo com sucesso!');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (!isAutoSave) alert('Erro ao conectar com o servidor.');
+        });
+}
+
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+const debouncedSaveGraph = debounce(() => saveGraph(true), 1000);
+
+// Load Graph
+function loadGraph() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return; // If not logged in, keep default or empty
+
+    // 1. Load from Local Cache (Instant)
+    const cachedData = localStorage.getItem(`graph_cache_${user.id}`);
+    if (cachedData) {
+        console.log('Loading from local cache...');
+        applyGraphData(JSON.parse(cachedData));
+    }
+
+    // 2. Fetch from Server (Sync/Update)
+    fetch(`http://localhost:3000/graph/${user.id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.data) {
+                console.log('Synced with server data');
+                // Update cache with server data (source of truth)
+                localStorage.setItem(`graph_cache_${user.id}`, JSON.stringify(data.data));
+                // Apply server data (optional: check for diffs to avoid flicker)
+                applyGraphData(data.data);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading graph:', error);
+        });
+}
+
+// Helper to apply data to state and render
+function applyGraphData(data) {
+    nodes = data.nodes || [];
+    edges = data.edges || [];
+    darkMode = data.darkMode || false;
+
+    // Apply dark mode
+    app.classList.toggle('dark-mode', darkMode);
+    if (darkModeToggle) {
+        darkModeToggle.checked = darkMode;
+    }
+
+    renderNodes();
+    renderEdges();
+    renderCardsList();
 }
 
 // Event Listeners
@@ -58,12 +175,17 @@ function setupEventListeners() {
     darkModeToggle.addEventListener('change', (e) => {
         darkMode = e.target.checked;
         app.classList.toggle('dark-mode', darkMode);
+        debouncedSaveGraph();
     });
 
     // Mode buttons
     modeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            mode = btn.dataset.mode;
+            if (mode === btn.dataset.mode) {
+                mode = 'view'; // Toggle off if already active
+            } else {
+                mode = btn.dataset.mode;
+            }
             updateModeButtons();
             updateModeIndicator();
             selectedNode = null;
@@ -72,6 +194,11 @@ function setupEventListeners() {
             renderNodes();
         });
     });
+
+    // Save button
+    if (btnSave) {
+        btnSave.addEventListener('click', () => saveGraph(false));
+    }
 
     // Canvas click
     canvas.addEventListener('click', (e) => {
@@ -85,6 +212,14 @@ function setupEventListeners() {
         } else {
             selectedNode = null;
             connectingFrom = null;
+
+            // Switch to view mode if clicking on canvas (unless adding)
+            if (mode !== 'view') {
+                mode = 'view';
+                updateModeButtons();
+                updateModeIndicator();
+            }
+
             renderNodes();
         }
     });
@@ -101,8 +236,85 @@ function setupEventListeners() {
 
     // Mouse up
     document.addEventListener('mouseup', () => {
-        draggingNode = null;
+        if (draggingNode) {
+            resolveCollisions(draggingNode);
+            draggingNode = null;
+            debouncedSaveGraph();
+        }
     });
+}
+
+// Resolve collisions for a specific node
+function resolveCollisions(nodeId) {
+    const node = nodes.find(n => n.id === nodeId);
+    if (!node) return;
+
+    let attempts = 0;
+    const maxAttempts = 300; // Allow more steps for smoother movement
+    let hasCollision = checkCollision(node.x, node.y, nodeId);
+
+    if (hasCollision) {
+        // Add animating class for smooth transition
+        const nodeEl = document.querySelector(`[data-node-id="${nodeId}"]`);
+        if (nodeEl) nodeEl.classList.add('animating');
+
+        while (hasCollision && attempts < maxAttempts) {
+            let moveX = 0;
+            let moveY = 0;
+            let collisionCount = 0;
+
+            // Calculate combined repulsion vector from all colliding nodes
+            nodes.forEach(other => {
+                if (other.id === nodeId) return;
+
+                let dx = node.x - other.x;
+                let dy = node.y - other.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < MIN_DISTANCE) {
+                    collisionCount++;
+
+                    // Handle exact overlap
+                    if (distance === 0) {
+                        dx = Math.random() - 0.5;
+                        dy = Math.random() - 0.5;
+                        distance = Math.sqrt(dx * dx + dy * dy);
+                    }
+
+                    // Repulsion vector (inversely proportional to distance?)
+                    // Simple normalized vector works well for "sliding" out
+                    moveX += dx / distance;
+                    moveY += dy / distance;
+                }
+            });
+
+            if (collisionCount === 0) {
+                hasCollision = false;
+                break;
+            }
+
+            // Normalize combined vector and apply small step
+            const moveLen = Math.sqrt(moveX * moveX + moveY * moveY);
+            if (moveLen > 0) {
+                const stepSize = 2; // Small step for precision
+                node.x += (moveX / moveLen) * stepSize;
+                node.y += (moveY / moveLen) * stepSize;
+            }
+
+            // Re-check collision status
+            hasCollision = checkCollision(node.x, node.y, nodeId);
+            attempts++;
+        }
+
+        renderNodes();
+        renderEdges();
+
+        // Remove animating class after transition
+        setTimeout(() => {
+            const nodeEl = document.querySelector(`[data-node-id="${nodeId}"]`);
+            if (nodeEl) nodeEl.classList.remove('animating');
+        }, 600);
+    }
 }
 
 // Update mode buttons
@@ -116,34 +328,51 @@ function updateModeButtons() {
 function updateModeIndicator() {
     modeIndicator.classList.toggle('visible', mode !== 'view');
     modeIndicator.classList.toggle('remove', mode === 'remove');
-    
+
     const messages = {
         add: 'Click anywhere to add a node',
         edit: 'Click a node to edit its label',
         connect: connectingFrom ? 'Click second node to connect to' : 'Click first node to connect from',
         remove: 'Click a node to remove it'
     };
-    
+
     modeIndicator.textContent = messages[mode] || '';
 }
 
 // Add node
 function addNode(x, y) {
+    // Find valid position if colliding
+    let finalX = x;
+    let finalY = y;
+    let angle = 0;
+    let radius = 50;
+    let attempts = 0;
+
+    while (checkCollision(finalX, finalY) && attempts < 100) {
+        finalX = x + Math.cos(angle) * radius;
+        finalY = y + Math.sin(angle) * radius;
+        angle += 1; // Increment angle
+        radius += 5; // Spiral out
+        attempts++;
+    }
+
     const newNode = {
         id: Date.now().toString(),
-        x,
-        y,
+        x: finalX,
+        y: finalY,
         label: `Node ${nodes.length + 1}`
     };
     nodes.push(newNode);
     renderNodes();
     renderCardsList();
+    debouncedSaveGraph();
 }
 
 // Update node position
 function updateNodePosition(nodeId, x, y) {
     const node = nodes.find(n => n.id === nodeId);
     if (node) {
+        // Allow overlap during drag (will resolve on drop)
         node.x = x;
         node.y = y;
         renderNodes();
@@ -158,6 +387,7 @@ function updateNodeLabel(nodeId, label) {
         node.label = label;
         renderNodes();
         renderCardsList();
+        debouncedSaveGraph();
     }
 }
 
@@ -168,6 +398,7 @@ function removeNode(nodeId) {
     renderNodes();
     renderEdges();
     renderCardsList();
+    debouncedSaveGraph();
 }
 
 // Connect nodes
@@ -179,6 +410,7 @@ function connectNodes(fromId, toId) {
     };
     edges.push(newEdge);
     renderEdges();
+    debouncedSaveGraph();
 }
 
 // Handle node click
@@ -227,14 +459,14 @@ function handleNodeMouseDown(nodeId, e) {
 // Render nodes
 function renderNodes() {
     nodesContainer.innerHTML = '';
-    
+
     nodes.forEach(node => {
         const nodeEl = document.createElement('div');
         nodeEl.className = 'node';
         nodeEl.dataset.nodeId = node.id;
         nodeEl.style.left = `${node.x}px`;
         nodeEl.style.top = `${node.y}px`;
-        
+
         if (selectedNode === node.id) {
             nodeEl.classList.add('selected');
         }
@@ -244,10 +476,10 @@ function renderNodes() {
         if (mode === 'remove') {
             nodeEl.classList.add('remove-mode');
         }
-        
+
         const nodeContent = document.createElement('div');
         nodeContent.className = 'node-content';
-        
+
         if (editingNode === node.id) {
             const input = document.createElement('input');
             input.type = 'text';
@@ -271,32 +503,32 @@ function renderNodes() {
         } else {
             nodeContent.textContent = node.label;
         }
-        
+
         if (selectedNode === node.id) {
             const badge = document.createElement('div');
             badge.className = 'node-badge';
             nodeContent.appendChild(badge);
         }
-        
+
         if (selectedNode === node.id || connectingFrom === node.id) {
             const overlay = document.createElement('div');
             overlay.className = 'node-overlay';
             nodeContent.appendChild(overlay);
         }
-        
+
         nodeEl.appendChild(nodeContent);
-        
+
         nodeEl.addEventListener('click', (e) => {
             e.stopPropagation();
             if (!draggingNode) {
                 handleNodeClick(node.id);
             }
         });
-        
+
         nodeEl.addEventListener('mousedown', (e) => {
             handleNodeMouseDown(node.id, e);
         });
-        
+
         nodesContainer.appendChild(nodeEl);
     });
 }
@@ -305,7 +537,7 @@ function renderNodes() {
 function renderEdges() {
     // Clear existing SVG content
     svgCanvas.innerHTML = '';
-    
+
     // Add gradient definition
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
@@ -314,27 +546,27 @@ function renderEdges() {
     gradient.setAttribute('y1', '0%');
     gradient.setAttribute('x2', '100%');
     gradient.setAttribute('y2', '0%');
-    
+
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
     stop1.setAttribute('stop-color', '#dc9c80');
     stop1.setAttribute('stop-opacity', '0.6');
-    
+
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
     stop2.setAttribute('stop-color', '#e8b59a');
     stop2.setAttribute('stop-opacity', '0.6');
-    
+
     gradient.appendChild(stop1);
     gradient.appendChild(stop2);
     defs.appendChild(gradient);
     svgCanvas.appendChild(defs);
-    
+
     // Draw edges
     edges.forEach(edge => {
         const fromNode = nodes.find(n => n.id === edge.from);
         const toNode = nodes.find(n => n.id === edge.to);
-        
+
         if (fromNode && toNode) {
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             line.setAttribute('class', 'edge-line');
@@ -350,7 +582,7 @@ function renderEdges() {
 // Render cards list
 function renderCardsList() {
     cardsList.innerHTML = '';
-    
+
     nodes.forEach(node => {
         const cardItem = document.createElement('button');
         cardItem.className = 'card-item';
