@@ -1,16 +1,15 @@
 // Function to handle form submission
-    function handleLogin(event) {
-        // Prevent the default form submission (which would reload the page)
-        event.preventDefault();
+function handleLogin(event) {
+    // Prevent the default form submission (which would reload the page)
+    event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const messageBox = document.getElementById('message-box');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const messageBox = document.getElementById('message-box');
 
-        // Clear previous classes
-        messageBox.classList.remove('message-box-success', 'message-box-error', 'hidden');
+    // Clear previous classes
+    messageBox.classList.remove('message-box-success', 'message-box-error', 'hidden');
 
-<<<<<<< HEAD
         // Simple validation and success message
         if (email && password) {
             // In a real application, you would send this data to a server for authentication.
@@ -29,7 +28,7 @@
             `;
             messageBox.classList.add('message-box-success');
             window.location.href = "index.html"           
-=======
+
     if (email && password) {
         fetch('http://localhost:3000/login', {
             method: 'POST',
@@ -53,8 +52,7 @@
                     </p>
                 `;
                     messageBox.classList.add('message-box-success');
-            document.getElementById('login-form').reset();
->>>>>>> 594181017b6e40d0d0c56a744aa5472fd7f2c9d2
+                    document.getElementById('login-form').reset();
 
                     // Store user info and redirect
                     localStorage.setItem('user', JSON.stringify(data.user));
@@ -69,21 +67,22 @@
                 messageBox.classList.add('message-box-error');
             });
 
-        } else {
-            messageBox.innerHTML = 'Preencha todos os campos para continuar.';
-            messageBox.classList.add('message-box-error');
-        }
-        
-        // Auto-hide the message box after 5 seconds
-        setTimeout(() => {
-            messageBox.classList.add('hidden');
-        }, 5000);
+    } else {
+        messageBox.innerHTML = 'Preencha todos os campos para continuar.';
+        messageBox.classList.add('message-box-error');
     }
 
-    // Attach the event listener when the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('login-form');
-        if (form) {
-            form.addEventListener('submit', handleLogin);
-        }
-    });
+    // Auto-hide the message box after 5 seconds
+    setTimeout(() => {
+        messageBox.classList.add('hidden');
+    }, 5000);
+}
+
+// Attach the event listener when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('login-form');
+    if (form) {
+        form.addEventListener('submit', handleLogin);
+    }
+});
+}
